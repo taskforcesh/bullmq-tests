@@ -3,8 +3,8 @@ import { v4 } from 'uuid';
 import { expect } from 'chai';
 import { after } from 'lodash';
 import { beforeEach, describe, it } from 'mocha';
-import { FlowProducer, Queue, QueueEvents, Worker } from '../classes';
-import { delay, removeAllQueueData } from '../utils';
+import { FlowProducer, Queue, QueueEvents, Worker } from '../src/classes';
+import { delay, removeAllQueueData } from '../src/utils';
 
 describe('events', function() {
   this.timeout(8000);

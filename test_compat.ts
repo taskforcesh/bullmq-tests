@@ -6,26 +6,26 @@ import * as IORedis from 'ioredis';
 import { after } from 'lodash';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { Job, Worker } from '../classes';
-import { Queue3 } from '../classes/compat';
-import { delay, removeAllQueueData } from '../utils';
+import { Job, Worker } from '../src/classes';
+import { Queue3 } from '../src/classes/compat';
+import { delay, removeAllQueueData } from '../src/utils';
 
-describe('Compat', function() {
-  describe('jobs getters', function() {
+describe('Compat', function () {
+  describe('jobs getters', function () {
     let queue: Queue3;
     let queueName: string;
 
-    beforeEach(async function() {
+    beforeEach(async function () {
       queueName = `test-${v4()}`;
       queue = new Queue3(queueName);
     });
 
-    afterEach(async function() {
+    afterEach(async function () {
       await queue.close();
       await removeAllQueueData(new IORedis(), queueName);
     });
 
-    it('should get waiting jobs', async function() {
+    it('should get waiting jobs', async function () {
       await queue.add('test', { foo: 'bar' });
       await queue.add('test', { baz: 'qux' });
 
@@ -36,7 +36,7 @@ describe('Compat', function() {
       expect(jobs[1].data.baz).to.be.equal('qux');
     });
 
-    it('should get paused jobs', async function() {
+    it('should get paused jobs', async function () {
       await queue.pause();
       await Promise.all([
         queue.add('test', { foo: 'bar' }),
@@ -49,7 +49,7 @@ describe('Compat', function() {
       expect(jobs[1].data.baz).to.be.equal('qux');
     });
 
-    it('should get active jobs', async function() {
+    it('should get active jobs', async function () {
       let processor;
       const processing = new Promise<void>(resolve => {
         processor = async (job: Job) => {
@@ -74,7 +74,7 @@ describe('Compat', function() {
       let listener;
 
       const completing = new Promise<void>(resolve => {
-        listener = async function() {
+        listener = async function () {
           counter--;
 
           if (counter === 0) {
@@ -103,7 +103,7 @@ describe('Compat', function() {
 
       let listener;
       const failing = new Promise<void>(resolve => {
-        listener = async function() {
+        listener = async function () {
           counter--;
 
           if (counter === 0) {
@@ -129,7 +129,7 @@ describe('Compat', function() {
       let completedCb;
 
       const completing = new Promise<void>((resolve, reject) => {
-        completedCb = after(3, async function() {
+        completedCb = after(3, async function () {
           try {
             const jobs = await queue.getJobs('completed');
             expect(jobs).to.be.an('array').that.have.length(3);
@@ -166,7 +166,7 @@ describe('Compat', function() {
       let failedCb;
 
       const failing = new Promise<void>((resolve, reject) => {
-        failedCb = after(3, async function() {
+        failedCb = after(3, async function () {
           try {
             const jobs = await queue.getJobs('failed');
             expect(jobs).to.be.an('array').that.has.length(3);
@@ -194,12 +194,12 @@ describe('Compat', function() {
       queue.off('failed', failedCb);
     });
 
-    it('should return subset of jobs when setting positive range', function(done) {
+    it('should return subset of jobs when setting positive range', function (done) {
       queue.process(async job => {});
 
       queue.on(
         'completed',
-        after(3, async function() {
+        after(3, async function () {
           try {
             const jobs = await queue.getJobs('completed', 1, 2, true);
             expect(jobs).to.be.an('array').that.has.length(2);
@@ -221,12 +221,12 @@ describe('Compat', function() {
       queue.add('test', { foo: 3 });
     });
 
-    it('should return subset of jobs when setting a negative range', function(done) {
+    it('should return subset of jobs when setting a negative range', function (done) {
       queue.process(async job => {});
 
       queue.on(
         'completed',
-        after(3, async function() {
+        after(3, async function () {
           try {
             const jobs = await queue.getJobs('completed', -3, -1, true);
             expect(jobs).to.be.an('array').that.has.length(3);
@@ -245,12 +245,12 @@ describe('Compat', function() {
       queue.add('test', { foo: 3 });
     });
 
-    it('should return subset of jobs when range overflows', function(done) {
+    it('should return subset of jobs when range overflows', function (done) {
       queue.process(async job => {});
 
       queue.on(
         'completed',
-        after(3, async function() {
+        after(3, async function () {
           try {
             const jobs = await queue.getJobs('completed', -300, 99999, true);
             expect(jobs).to.be.an('array').that.has.length(3);
@@ -269,7 +269,7 @@ describe('Compat', function() {
       queue.add('test', { foo: 3 });
     });
 
-    it('should return jobs for multiple types', function(done) {
+    it('should return jobs for multiple types', function (done) {
       let counter = 0;
 
       queue.process(async job => {
@@ -282,7 +282,7 @@ describe('Compat', function() {
 
       queue.on(
         'completed',
-        after(2, async function() {
+        after(2, async function () {
           try {
             const jobs = await queue.getJobs(['completed', 'waiting']);
             expect(jobs).to.be.an('array');
@@ -299,16 +299,16 @@ describe('Compat', function() {
     });
   });
 
-  describe('events', function() {
+  describe('events', function () {
     let queue: Queue3;
     let queueName: string;
 
-    beforeEach(async function() {
+    beforeEach(async function () {
       queueName = `test-${v4()}`;
       queue = new Queue3(queueName);
     });
 
-    afterEach(async function() {
+    afterEach(async function () {
       await queue.close();
       await removeAllQueueData(new IORedis(), queueName);
     });
@@ -327,15 +327,15 @@ describe('Compat', function() {
       queue.off('waiting', listener);
     });
 
-    it('should emit global waiting event when a job has been added', function(done) {
-      queue.on('waiting', function() {
+    it('should emit global waiting event when a job has been added', function (done) {
+      queue.on('waiting', function () {
         done();
       });
 
       queue.add('test', { foo: 'bar' });
     });
 
-    it('emits drained event when all jobs have been processed', async function() {
+    it('emits drained event when all jobs have been processed', async function () {
       await queue.add('test', { foo: 'bar' });
       await queue.add('test', { foo: 'baz' });
 
@@ -355,7 +355,7 @@ describe('Compat', function() {
       queue.off('drained', _resolve);
     });
 
-    it('emits global drained event when all jobs have been processed', async function() {
+    it('emits global drained event when all jobs have been processed', async function () {
       queue.process(async job => {});
 
       let _resolveDrained;
@@ -406,7 +406,7 @@ describe('Compat', function() {
       queue.off('completed', _resolveCompleting);
     });
 
-    it('should listen to global events with .once', async function() {
+    it('should listen to global events with .once', async function () {
       const events: string[] = [];
 
       const waitingCb = () => events.push('waiting');
@@ -427,7 +427,7 @@ describe('Compat', function() {
       queue.off('global:completed', completedCb);
     });
 
-    it('should listen to global events with .on', async function() {
+    it('should listen to global events with .on', async function () {
       const events: string[] = [];
       const waitingListener = () => events.push('waiting');
       const activeListener = () => events.push('active');
@@ -455,16 +455,16 @@ describe('Compat', function() {
     });
   });
 
-  describe('Pause', function() {
+  describe('Pause', function () {
     let queue: Queue3;
     let queueName: string;
 
-    beforeEach(async function() {
+    beforeEach(async function () {
       queueName = `test-${v4()}`;
       queue = new Queue3(queueName);
     });
 
-    afterEach(async function() {
+    afterEach(async function () {
       await queue.close();
       await removeAllQueueData(new IORedis(), queueName);
     });
@@ -685,7 +685,7 @@ describe('Compat', function() {
     //   expect(count.completed).to.be.eql(1);
     // });
 
-    it('pauses fast when queue is drained', async function() {
+    it('pauses fast when queue is drained', async function () {
       await queue.process(async () => {});
 
       let drainedListener;

@@ -6,8 +6,8 @@ import { after } from 'lodash';
 import { describe, beforeEach, it } from 'mocha';
 import * as IORedis from 'ioredis';
 import { v4 } from 'uuid';
-import { Queue, Job, Worker } from '../classes';
-import { removeAllQueueData } from '../utils';
+import { Queue, Job, Worker } from '../src/classes';
+import { removeAllQueueData } from '../src/utils';
 
 describe('Jobs getters', function() {
   let queue: Queue;

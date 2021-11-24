@@ -4,8 +4,8 @@ import { after, times } from 'lodash';
 import { describe, beforeEach, it } from 'mocha';
 import * as sinon from 'sinon';
 import { v4 } from 'uuid';
-import { Queue, QueueEvents, Job, Worker, QueueScheduler } from '../classes';
-import { delay, removeAllQueueData } from '../utils';
+import { Queue, QueueEvents, Job, Worker, QueueScheduler } from '../src/classes';
+import { delay, removeAllQueueData } from '../src/utils';
 
 describe('workers', function() {
   const sandbox = sinon.createSandbox();

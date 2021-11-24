@@ -3,8 +3,8 @@ import * as IORedis from 'ioredis';
 import { after } from 'lodash';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { Queue, QueueEvents, Worker } from '../classes';
-import { delay, removeAllQueueData } from '../utils';
+import { Queue, QueueEvents, Worker } from '../src/classes';
+import { delay, removeAllQueueData } from '../src/utils';
 
 describe('Cleaner', () => {
   let queue: Queue;

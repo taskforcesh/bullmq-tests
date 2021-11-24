@@ -7,12 +7,12 @@ import {
   Worker,
   FlowProducer,
   JobNode,
-} from '../classes';
+} from '../src/classes';
 import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { removeAllQueueData, delay } from '../utils';
+import { removeAllQueueData, delay } from '../src/utils';
 
 describe('flows', () => {
   let queue: Queue;

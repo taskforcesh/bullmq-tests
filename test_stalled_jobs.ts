@@ -1,26 +1,26 @@
-import { Queue, QueueScheduler, Worker, QueueEvents } from '../classes';
-import { delay, removeAllQueueData } from '../utils';
+import { Queue, QueueScheduler, Worker, QueueEvents } from '../src/classes';
+import { delay, removeAllQueueData } from '../src/utils';
 import * as IORedis from 'ioredis';
 import { after } from 'lodash';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
 import { expect } from 'chai';
 
-describe('stalled jobs', function() {
+describe('stalled jobs', function () {
   let queue: Queue;
   let queueName: string;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     queueName = `test-${v4()}`;
     queue = new Queue(queueName);
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await queue.close();
     await removeAllQueueData(new IORedis(), queueName);
   });
 
-  it('process stalled jobs when starting a queue', async function() {
+  it('process stalled jobs when starting a queue', async function () {
     this.timeout(10000);
 
     const queueEvents = new QueueEvents(queueName);
@@ -90,7 +90,7 @@ describe('stalled jobs', function() {
     await worker2.close();
   });
 
-  it('fail stalled jobs that stall more than allowable stalled limit', async function() {
+  it('fail stalled jobs that stall more than allowable stalled limit', async function () {
     this.timeout(6000);
 
     const queueEvents = new QueueEvents(queueName);
@@ -158,7 +158,7 @@ describe('stalled jobs', function() {
     await queueScheduler.close();
   });
 
-  it('jobs not stalled while lock is extended', async function() {
+  it('jobs not stalled while lock is extended', async function () {
     this.timeout(5000);
 
     const concurrency = 4;

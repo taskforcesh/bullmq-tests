@@ -1,10 +1,10 @@
-import { Queue, QueueEvents, QueueScheduler, Worker } from '../classes';
+import { Queue, QueueEvents, QueueScheduler, Worker } from '../src/classes';
 import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { after, every, last } from 'lodash';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { removeAllQueueData } from '../utils';
+import { removeAllQueueData } from '../src/utils';
 
 describe('Rate Limiter', function() {
   let queue: Queue;

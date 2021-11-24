@@ -1,9 +1,9 @@
-import { Queue, Job, Worker, QueueEvents, QueueScheduler } from '../classes';
+import { Queue, Job, Worker, QueueEvents, QueueScheduler } from '../src/classes';
 import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { v4 } from 'uuid';
-import { removeAllQueueData } from '../utils';
+import { removeAllQueueData } from '../src/utils';
 
 describe('Delayed jobs', function() {
   this.timeout(15000);

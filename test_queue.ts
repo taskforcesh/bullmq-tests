@@ -72,8 +72,8 @@ import * as IORedis from 'ioredis';
 import { describe, beforeEach, it } from 'mocha';
 import * as sinon from 'sinon';
 import { v4 } from 'uuid';
-import { Queue, QueueScheduler } from '../classes';
-import { removeAllQueueData } from '../utils';
+import { Queue, QueueScheduler } from '../src/classes';
+import { removeAllQueueData } from '../src/utils';
 
 describe('queues', function() {
   const sandbox = sinon.createSandbox();

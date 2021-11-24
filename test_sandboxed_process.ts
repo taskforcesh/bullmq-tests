@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { after } from 'lodash';
-import { Queue, QueueEvents, Worker, Job, ChildProcessExt } from '../classes';
+import { Queue, QueueEvents, Worker, Job, ChildProcessExt } from '../src/classes';
 import { beforeEach } from 'mocha';
 import { v4 } from 'uuid';
-import { delay, removeAllQueueData } from '../utils';
+import { delay, removeAllQueueData } from '../src/utils';
 const { stdout, stderr } = require('test-console');
 
 describe('sandboxed process', () => {

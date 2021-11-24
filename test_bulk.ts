@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { Queue, Worker, Job } from '../classes';
-import { removeAllQueueData } from '../utils';
+import { Queue, Worker, Job } from '../src/classes';
+import { removeAllQueueData } from '../src/utils';
 
 describe('bulk jobs', () => {
   let queue: Queue;
