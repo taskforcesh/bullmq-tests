@@ -136,7 +136,9 @@ describe('stalled jobs', function () {
     const allFailed = new Promise<void>(resolve => {
       queueScheduler.on(
         'failed',
-        after(concurrency, (jobId, failedReason, prev) => {
+        after(concurrency, async (jobId, failedReason, prev) => {
+          const job = await queue.getJob(jobId);
+          expect(job.finishedOn).to.be.an('number');
           expect(prev).to.be.equal('active');
           expect(failedReason.message).to.be.equal(errorMessage);
           resolve();
