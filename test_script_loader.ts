@@ -310,20 +310,12 @@ describe('scriptLoader', () => {
       expect(loader.loadScripts.calledTwice);
     });
 
-    it('errors if no files are found in a directory', async () => {
+    it('throws error if no lua files are found in a directory', async () => {
       const dirname = __dirname + '/fixtures/scripts/dir-test/empty';
 
-      let didThrow = false;
-      let error: Error;
-      try {
-        await loader.loadScripts(dirname);
-      } catch (err) {
-        error = <Error>err;
-        didThrow = true;
-      }
-
-      expect(didThrow).to.eql(true);
-      expect(error.message).to.have.string('No .lua files found!');
+      await expect(loader.loadScripts(dirname)).to.be.eventually.rejectedWith(
+        'No .lua files found!',
+      );
     });
 
     it('does not load non .lua files', async () => {
