@@ -9,7 +9,7 @@ import {
 import { RedisConnection } from '../src/classes';
 import { RedisClient } from '../src/interfaces';
 
-describe.only('scriptLoader', () => {
+describe('scriptLoader', () => {
   let loader: ScriptLoader;
 
   function getRootPath() {
