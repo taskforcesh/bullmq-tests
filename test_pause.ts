@@ -2,29 +2,37 @@ import { expect } from 'chai';
 import * as IORedis from 'ioredis';
 import { beforeEach, describe, it } from 'mocha';
 import { v4 } from 'uuid';
-import { Job, Queue, QueueEvents, QueueScheduler, Worker } from '../src/classes';
+import {
+  Job,
+  Queue,
+  QueueEvents,
+  QueueScheduler,
+  Worker,
+} from '../src/classes';
 import { delay, removeAllQueueData } from '../src/utils';
 
-describe('Pause', function() {
+describe('Pause', function () {
   let queue: Queue;
   let queueName: string;
   let queueEvents: QueueEvents;
 
-  beforeEach(async function() {
+  const connection = { host: 'localhost' };
+
+  beforeEach(async function () {
     queueName = `test-${v4()}`;
-    queue = new Queue(queueName);
-    queueEvents = new QueueEvents(queueName);
+    queue = new Queue(queueName, { connection });
+    queueEvents = new QueueEvents(queueName, { connection });
     await queueEvents.waitUntilReady();
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await queue.close();
     await queueEvents.close();
     await removeAllQueueData(new IORedis(), queueName);
   });
 
   // Skipped since some side effect makes this test fail
-  it.skip('should not processed delayed jobs', async function() {
+  it.skip('should not processed delayed jobs', async function () {
     this.timeout(5000);
 
     const queueScheduler = new QueueScheduler(queueName);
@@ -32,9 +40,13 @@ describe('Pause', function() {
 
     let processed = false;
 
-    const worker = new Worker(queueName, async () => {
-      processed = true;
-    });
+    const worker = new Worker(
+      queueName,
+      async () => {
+        processed = true;
+      },
+      { connection },
+    );
     await worker.waitUntilReady();
 
     await queue.pause();
@@ -72,7 +84,7 @@ describe('Pause', function() {
       };
     });
 
-    const worker = new Worker(queueName, process);
+    const worker = new Worker(queueName, process, { connection });
     await worker.waitUntilReady();
 
     await queue.pause();
@@ -114,7 +126,7 @@ describe('Pause', function() {
       };
     });
 
-    new Worker(queueName, process);
+    new Worker(queueName, process, { connection });
 
     queueEvents.on('paused', async () => {
       isPaused = false;
@@ -146,7 +158,7 @@ describe('Pause', function() {
       };
     });
 
-    worker = new Worker(queueName, process);
+    worker = new Worker(queueName, process, { connection });
     await worker.waitUntilReady();
 
     await worker.pause();
@@ -176,7 +188,7 @@ describe('Pause', function() {
       };
     });
 
-    const worker = new Worker(queueName, process);
+    const worker = new Worker(queueName, process, { connection });
     await worker.waitUntilReady();
 
     const jobs: Promise<Job | void>[] = [];
@@ -227,10 +239,10 @@ describe('Pause', function() {
       };
     });
 
-    const worker1 = new Worker(queueName, process1);
+    const worker1 = new Worker(queueName, process1, { connection });
     await worker1.waitUntilReady();
 
-    const worker2 = new Worker(queueName, process2);
+    const worker2 = new Worker(queueName, process2, { connection });
     await worker2.waitUntilReady();
 
     await Promise.all([
@@ -261,7 +273,7 @@ describe('Pause', function() {
       };
     });
 
-    const worker = new Worker(queueName, process);
+    const worker = new Worker(queueName, process, { connection });
     await worker.waitUntilReady();
 
     await queue.add('test', 1);
@@ -277,8 +289,15 @@ describe('Pause', function() {
     return worker.close();
   });
 
-  it('pauses fast when queue is drained', async function() {
-    const worker = new Worker(queueName, async () => {});
+  it('pauses fast when queue is drained', async function () {
+    const worker = new Worker(
+      queueName,
+      async () => {
+      },
+      {
+        connection,
+      },
+    );
     await worker.waitUntilReady();
 
     await queue.add('test', {});
@@ -311,10 +330,14 @@ describe('Pause', function() {
     expect(isResumedQueuePaused).to.be.false;
   });
 
-  it('should pause and resume worker without error', async function() {
-    const worker = new Worker(queueName, async job => {
-      await delay(100);
-    });
+  it('should pause and resume worker without error', async function () {
+    const worker = new Worker(
+      queueName,
+      async job => {
+        await delay(100);
+      },
+      { connection },
+    );
 
     await worker.waitUntilReady();
     await delay(10);
